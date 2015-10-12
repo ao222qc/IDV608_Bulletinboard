@@ -1,0 +1,19 @@
+#Signature
+{
+	 border:1px solid black;
+	 width:100px;
+	 margin-left:65px;
+}
+.Post
+{
+	border:1px solid black;
+	margin-left:32px;
+	margin-right:32px;
+	height:400px;
+	margin-bottom:32px;
+	margin-top:32px;
+}
+fieldset
+{
+	width:400px;
+}
