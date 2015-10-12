@@ -25,14 +25,11 @@ class BulletinController
 			$category = $this->BulletinView->GetCategory();
 			$signature = $this->BulletinView->GetSignature();
 
-
-			//TODO: Send em through some validation.
+			//TODO: Send em through some validation before saving.
 
 			$this->Category->SetCategory($category);
 
-			$this->Post->AddPost($post, $signature);
-
-
+			$this->Post->AddPostToDatabase($post, $signature);
 		}
 
 	}

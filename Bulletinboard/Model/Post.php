@@ -17,13 +17,19 @@ class Post
 		$this->postDAL = $postDAL;
 	}
 
-	public function AddPost($post, $signature)
+	public function AddPostToDatabase($post, $signature)
 	{
 		$this->Content = $post;
 		$this->Signature = $signature;
 		$this->CategoryID = $this->Category->GetCategoryID();
 
-		$this->postDAL->AddPost($this);
+		//$this->postDAL->AddPost($this);
+
+		$data = array();
+
+		$data = $this->postDAL->GetPostsByCategory();
+
+		echo $data[1]['Post'];
 	}
 
 	public function GetContent()
