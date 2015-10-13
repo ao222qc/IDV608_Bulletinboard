@@ -77,7 +77,7 @@ private $BulletinPage;
 				</select> 
 				<br>
 			  Post:<br>
-			  <textarea rows="5" cols="80" id="' . self::$post .'" name = "' . self::$post .'" class="Post"></textarea>
+			  <textarea rows="5" cols="80" id="' . self::$post .'" name = "' . self::$post .'" class="post"></textarea>
 			  <input type="submit" id="' . self::$submit . '" name="' . self::$submit . '" value="Submit"/>
 			</fieldset>
 			</form> 
@@ -91,15 +91,17 @@ private $BulletinPage;
 		{
 			$html .=  
 			'		
-				<fieldset>
+				<div id="PostList">
+				<fieldset class="post">
 				<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
 				<div class="Signature">
 				'.$post['Signature'].' 
 				</div>
-				<div id="Post">
+				<div class="content">
 				' .$post['Post'] . '
 				</div>	
-				</fieldset>			
+				</fieldset>		
+				</div>	
 			';
 		}
 

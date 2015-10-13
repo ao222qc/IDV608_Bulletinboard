@@ -63,6 +63,8 @@ class PostDAL
 
 		$this->conn->close();
 
+		
+
 		return isset($allrows) ? $allrows : null;
 	}
 }

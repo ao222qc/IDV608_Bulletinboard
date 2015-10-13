@@ -4,7 +4,8 @@
 	 width:100px;
 	 margin-left:65px;
 }
-.Post
+
+textarea.post
 {
 	border:1px solid black;
 	margin-left:32px;
@@ -13,16 +14,29 @@
 	margin-bottom:32px;
 	margin-top:32px;
 }
-fieldset
+
+fieldset.post
 {
-	width:400px;
+	max-width: 400px;
 }
+
+fieldset.post .content
+{
+	max-width: 400px;
+	word-wrap: break-word;
+}
+
 #Post{
 
 	margin-top:20px;
+	height:100%;
+	width:400px;
 
 }
+
 .Signature
 {
 	text-decoration: underline;
+	margin-bottom:10px;
 }
+
