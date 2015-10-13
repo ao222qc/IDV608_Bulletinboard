@@ -8,28 +8,49 @@ class Post
 	private $ChildPosts;
 	private $CategoryID;
 	private $Category;
-	private $postDAL;
+	private static $postDAL;
 	//private $PoststyleID;
 
-	public function __construct(Category $category, PostDAL $postDAL)
+	public static function Initialize()
 	{
-		$this->Category = $category;
-		$this->postDAL = $postDAL;
+		self::$postDAL = new PostDAL();
+		self::$postDAL->Initialize();
 	}
 
-	public function AddPostToDatabase($post, $signature)
+	public function __construct($content, $signature, $category)
 	{
-		$this->Content = $post;
-		$this->Signature = $signature;
-		$this->CategoryID = $this->Category->GetCategoryID();
 
-		//$this->postDAL->AddPost($this);
+		if($content != null && $signature != null && $category != null)
+		{
+			$this->Content = $content;
+			$this->Signature = $signature;
+			$this->CategoryID = $category;
+		}
+
+	}
+	public function AddPostToDataBase(Post $post)
+	{
+		self::$postDAL->AddPost($post);
+	}
+
+	public function GetPostsByCategory($category)
+	{
+		$data = array();
+
+		$data = self::$postDAL->GetPostsByCategory($category);
+
+		return $data;
+	}
+
+	public function GetAllPosts()
+	{
 
 		$data = array();
 
-		$data = $this->postDAL->GetPostsByCategory();
+		$data = self::$postDAL->GetAllPosts();
 
-		echo $data[1]['Post'];
+		return $data;
+
 	}
 
 	public function GetContent()

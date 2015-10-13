@@ -18,7 +18,6 @@ class Category
 
 	public function SetCategory($categoryid)
 	{
-
 		$this->CategoryID = $categoryid;
 
 		switch($this->CategoryID)

@@ -13,7 +13,6 @@ class PostDAL
 		$db = Settings::mysql_db;
 
 		$this->conn = mysqli_connect($host, $user, $password, $db);
-
 	}
 
 	public function AddPost(Post $post)
@@ -27,35 +26,43 @@ class PostDAL
 		$signature = mysqli_escape_string($this->conn, $signature);
 		$childposts = mysqli_escape_string($this->conn, $childposts);
 
-
 		mysqli_query($this->conn, "INSERT INTO post (Post, Signature, Childpost, CategoryID) VALUES ('$postContent', '$signature', '$childposts', '$PostCategory')");
 	}
 
-	public function GetPostsByCategory()
+	public function GetPostsByCategory($category)
 	{
 
-
-		$res = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post WHERE CategoryID = 3");
+		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post WHERE CategoryID = '$category'");
 
 		$allrows = array();
 
-		//fetch_assoc() returns null when there are no rows to be fetched
-		//As a result, the while loop will stop because null ain't 'true'
-		while ($row = $res->fetch_array())
+		while ($row = $result->fetch_array())
 		{
-			//var_dump($row);
-		    array_push($allrows,$row);
+		    array_push($allrows, $row);
 		}
 
-		$res->free();
+		$result->free();
 
 		$this->conn->close();
 
-		//var_dump($allrows);
+		return isset($allrows) ? $allrows : null;
+	}	
+
+	public function GetAllPosts()
+	{
+		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post");
+
+		$allrows = array();
+
+		while ($row = $result->fetch_array())
+		{
+		    array_push($allrows, $row);
+		}
+
+		$result->free();
+
+		$this->conn->close();
 
 		return isset($allrows) ? $allrows : null;
-
 	}
-
-	
 }
