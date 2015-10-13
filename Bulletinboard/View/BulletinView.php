@@ -5,6 +5,7 @@ class BulletinView
 
 private static $GoToPost = 'BulletinView::GoToPost';
 private static $GoToViewPosts = 'BulltinView::GoToViewPosts';
+private static $ListSpecificCategory = 'BulletinView::ListSpecificCategory';
 private static $submit = 'BulletinView::Submit';
 private static $category = 'BulletinView::Category';
 private static $post = 'BulletinView::Post';
@@ -86,11 +87,26 @@ private $BulletinPage;
 
 	public function GenerateViewPostsHTML()
 	{
-		$html = null;
+		//$html = null;
+		$html =
+		'	<form method="post">
+			<div id="categorymenu">
+				  <br>
+			    <select id="' . self::$category . '" name = "' . self::$category . '">
+					<option value="' . $this->CategoryList[0]['CategoryID'] .'">' . $this->CategoryList[0]['Category'] .'</option>
+					<option value="' . $this->CategoryList[1]['CategoryID'] .'">' . $this->CategoryList[1]['Category'] .'</option>
+					<option value="' . $this->CategoryList[2]['CategoryID'] .'">' . $this->CategoryList[2]['Category'] .'</option>
+					<option value="' . $this->CategoryList[3]['CategoryID'] .'">' . $this->CategoryList[3]['Category'] .'</option>
+					<option value="' . $this->CategoryList[4]['CategoryID'] .'">' . $this->CategoryList[4]['Category'] .'</option>
+				</select>
+				<input type="submit" id="' . self::$ListSpecificCategory . '" name="' . self::$ListSpecificCategory . '" value="Show posts"/>
+				</div>
+				</form>
+		';
 		foreach($this->PostList as $post)
 		{
 			$html .=  
-			'		
+			'	
 				<div id="PostList">
 				<fieldset class="post">
 				<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
@@ -102,10 +118,18 @@ private $BulletinPage;
 				</div>	
 				</fieldset>		
 				</div>	
+				
+				<br>
 			';
 		}
 
+
+
 		return $html;
+	}
+	public function HasUserChosenCategory()
+	{
+		return isset($_POST[self::$ListSpecificCategory]);
 	}
 
 	public function SetBulletinPostPage()

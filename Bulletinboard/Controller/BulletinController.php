@@ -40,6 +40,11 @@ class BulletinController
 		{		
 			$this->GetPosts();
 		}
+
+		if($this->BulletinView->HasUserChosenCategory())
+		{
+			$this->GetPostsByCategory();
+		}
 	}
 
 	public function AddPost()
@@ -66,6 +71,15 @@ class BulletinController
 	public function GetPosts()
 	{
 		$posts = $this->Post->GetAllPosts();
+
+		$this->BulletinView->GetPosts($posts);
+
+		$this->BulletinView->SetBulletinViewPostPage();
+	}
+
+	public function GetPostsByCategory()
+	{
+		$posts = $this->Post->GetPostsByCategory($this->BulletinView->GetCategory());
 
 		$this->BulletinView->GetPosts($posts);
 
