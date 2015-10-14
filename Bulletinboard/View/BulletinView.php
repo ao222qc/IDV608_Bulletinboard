@@ -3,13 +3,14 @@
 class BulletinView
 {
 
-private static $GoToPost = 'BulletinView::GoToPost';
-private static $GoToViewPosts = 'BulltinView::GoToViewPosts';
+//private static $GoToFirstPage = 'BulletinView::GoToFirstPage';
+private static $ListallCategories = 'BulletinView::ListallCategories';
 private static $ListSpecificCategory = 'BulletinView::ListSpecificCategory';
 private static $submit = 'BulletinView::Submit';
 private static $category = 'BulletinView::Category';
 private static $post = 'BulletinView::Post';
 private static $signature = 'BulletinView::Signature';
+private static $childpost = 'BulletinView::Childpost';
 private $CategoryList;
 private $PostList;
 private $BulletinPage;
@@ -17,10 +18,26 @@ private $BulletinPage;
 	
 	public function __construct()
 	{
-		$this->BulletinPage = $this->GenerateFirstPage();
+		
 	}
 
-	
+	public function SetPageToDisplay()
+	{
+		if(isset($_GET["Post"]))
+		{
+			$this->BulletinPage = $this->GeneratePostHTML();
+		}
+		else if (isset($_GET["View"]))
+		{
+			$this->BulletinPage = $this->GenerateViewPostsHTML();
+		}
+		else
+		{
+			$this->BulletinPage = $this->GenerateFirstPage();
+		}
+	}
+
+
 	public function Response()
 	{
 
@@ -49,11 +66,10 @@ private $BulletinPage;
 			<form method ="post">
 			<fieldset>
 			<legend>View user posts or create your own!</legend>
-				<input type="submit" id="' . self::$GoToPost .'" name="'. self::$GoToPost .'" value="Create your own"/><br><br>
-				<input type ="submit" id="' . self::$GoToViewPosts . '" name="' . self::$GoToViewPosts . '" value="View posts"/>
+				<a href=?Post>Create a post</a></form>
+				<a href=?View>View posts</a></form>
 			</fieldset>
 			</form>
-
 		';
 	}
 
@@ -80,6 +96,7 @@ private $BulletinPage;
 			  Post:<br>
 			  <textarea rows="5" cols="80" id="' . self::$post .'" name = "' . self::$post .'" class="post"></textarea>
 			  <input type="submit" id="' . self::$submit . '" name="' . self::$submit . '" value="Submit"/>
+			 <a href=?Start>Back</a></form>
 			</fieldset>
 			</form> 
 		';
@@ -87,9 +104,10 @@ private $BulletinPage;
 
 	public function GenerateViewPostsHTML()
 	{
-		//$html = null;
 		$html =
 		'	<form method="post">
+			<fieldset>
+			<legend>Select category to watch!</legend>
 			<div id="categorymenu">
 				  <br>
 			    <select id="' . self::$category . '" name = "' . self::$category . '">
@@ -99,57 +117,89 @@ private $BulletinPage;
 					<option value="' . $this->CategoryList[3]['CategoryID'] .'">' . $this->CategoryList[3]['Category'] .'</option>
 					<option value="' . $this->CategoryList[4]['CategoryID'] .'">' . $this->CategoryList[4]['Category'] .'</option>
 				</select>
-				<input type="submit" id="' . self::$ListSpecificCategory . '" name="' . self::$ListSpecificCategory . '" value="Show posts"/>
+				<input type="submit" id="' . self::$ListSpecificCategory . '" name="' . self::$ListSpecificCategory . '" value="Show specific posts"/>
+				<input type="submit" id="' . self::$ListallCategories . '" name="' . self::$ListallCategories . '" value="Show all"/>
+				<a href=?Start>Back</a></form>
 				</div>
+				</fieldset>
 				</form>
 		';
-		foreach($this->PostList as $post)
+
+		if(isset($this->PostList))
 		{
-			$html .=  
-			'	
-				<div id="PostList">
-				<fieldset class="post">
-				<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
-				<div class="Signature">
-				'.$post['Signature'].' 
-				</div>
-				<div class="content">
-				' .$post['Post'] . '
-				</div>	
-				</fieldset>		
-				</div>	
-				
-				<br>
-			';
+			foreach($this->PostList as $post)
+			{
+				$html .=  
+				'	
+					<form method="post">
+					<div id="PostList">
+					<fieldset class="post">
+					<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
+					<div class="Signature">
+					'.$post['Signature'].' 
+					</div>
+					<div class="content">
+					' .$post['Post'] . '
+					</div>	
+					<input type="submit" id="' . self::$childpost . '" name="' . self::$childpost . '" value="Reply"/>
+					</fieldset>		
+					</div>
+					</form>	
+					<br>
+				';
+			}
 		}
-
-
 
 		return $html;
 	}
+
+	public function HasUserChosenShowAll()
+	{
+		return isset($_POST[self::$ListallCategories]);
+	}
+
 	public function HasUserChosenCategory()
 	{
 		return isset($_POST[self::$ListSpecificCategory]);
 	}
 
-	public function SetBulletinPostPage()
+	public function UserPressedReply()
+	{
+		return isset($_POST[self::$childpost]);
+	}
+
+	public function GetPostForReply()
+	{
+		//someshit
+	}
+
+	/*public function SetBulletinPostPage()
 	{
 		$this->BulletinPage = $this->GeneratePostHTML();
-	}
+	}*/
 
 	public function SetBulletinViewPostPage()
 	{
 		$this->BulletinPage = $this->GenerateViewPostsHTML();
 	}
-
+	/*
 	public function UserWantsToPost()
 	{
-		return isset($_POST[self::$GoToPost]);
+
+		$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+		if(isset($_POST[self::$GoToPost]))
+		{
+			header('LOCATION:' . $actual_link . '?Post');
+		}
 	}
+	
+
 	public function UserWantsToViewPosts()
 	{
-		return isset($_POST[self::$GoToViewPosts]);
+		return isset($_GET['View']);
 	}
+	*/
 
 	public function IsCategorySet()
 	{

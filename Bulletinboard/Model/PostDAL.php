@@ -22,6 +22,10 @@ class PostDAL
 		$childposts = $post->GetChildPosts();
 		$PostCategory = $post->GetCategory();
 
+		$postContent = strip_tags($postContent);
+		$signature = strip_tags($signature);
+		$childposts = strip_tags($childposts);
+
 		$postContent = mysqli_escape_string($this->conn, $postContent);
 		$signature = mysqli_escape_string($this->conn, $signature);
 		$childposts = mysqli_escape_string($this->conn, $childposts);

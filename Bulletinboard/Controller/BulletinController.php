@@ -25,25 +25,25 @@ class BulletinController
 		//Fetches the cached Categorylist from CategoryDAL. Sends to bulletinview.
 		$this->BulletinView->LoadCategories($this->CategoryDAL->GetCategoryList());
 
-
-		if($this->BulletinView->UserWantsToPost())
-		{
-			$this->BulletinView->SetBulletinPostPage();	
-		}
+		$this->BulletinView->SetPageToDisplay();
 
 		if($this->BulletinView->HasUserSubmitted())
 		{
 			$this->AddPost();	
 		}
 
-		if($this->BulletinView->UserWantsToViewPosts())
-		{		
-			$this->GetPosts();
-		}
-
 		if($this->BulletinView->HasUserChosenCategory())
 		{
 			$this->GetPostsByCategory();
+		}
+
+		if($this->BulletinView->HasUserChosenShowAll())
+		{
+			$this->GetPosts();
+		}
+		if($this->BulletinView->UserPressedReply())
+		{
+			
 		}
 	}
 
@@ -74,7 +74,7 @@ class BulletinController
 
 		$this->BulletinView->GetPosts($posts);
 
-		$this->BulletinView->SetBulletinViewPostPage();
+		$this->BulletinView->SetPageToDisplay();
 	}
 
 	public function GetPostsByCategory()
@@ -83,7 +83,7 @@ class BulletinController
 
 		$this->BulletinView->GetPosts($posts);
 
-		$this->BulletinView->SetBulletinViewPostPage();
+		$this->BulletinView->SetPageToDisplay();
 	}
 
 }
