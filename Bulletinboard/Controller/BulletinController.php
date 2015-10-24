@@ -25,6 +25,8 @@ class BulletinController
 		//Fetches the cached Categorylist from CategoryDAL. Sends to bulletinview.
 		$this->BulletinView->LoadCategories($this->CategoryDAL->GetCategoryList());
 
+
+
 		$this->BulletinView->SetPageToDisplay();
 
 		if($this->BulletinView->HasUserSubmitted())
@@ -43,7 +45,9 @@ class BulletinController
 		}
 		if($this->BulletinView->UserPressedReply())
 		{
-			
+			$signature = $this->BulletinView->UserPressedReply();
+
+			$this->GetPostBySignature($signature);
 		}
 	}
 
@@ -84,6 +88,16 @@ class BulletinController
 		$this->BulletinView->GetPosts($posts);
 
 		$this->BulletinView->SetPageToDisplay();
+	}
+
+	public function GetPostBySignature($signature)
+	{
+		$post = $this->Post->GetPostsBySignature($signature);
+
+		$this->BulletinView->GetPostForReply($post);
+
+		$this->BulletinView->SetPageToDisplay();
+
 	}
 
 }

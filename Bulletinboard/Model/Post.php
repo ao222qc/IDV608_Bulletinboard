@@ -42,6 +42,18 @@ class Post
 		return $data;
 	}
 
+	public function GetPostsBySignature($signature)
+	{
+
+
+		$data = array();
+
+		$data = self::$postDAL->GetPostsBySignature($signature);
+
+		return $data;
+
+	}
+
 	public function GetAllPosts()
 	{
 

@@ -52,6 +52,24 @@ class PostDAL
 		return isset($allrows) ? $allrows : null;
 	}	
 
+	public function GetPostsBySignature($signature)
+	{
+		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post WHERE Signature = '$signature'");
+
+		$allrows = array();
+
+		while ($row = $result->fetch_array())
+		{
+		    array_push($allrows, $row);
+		}
+
+		$result->free();
+
+		$this->conn->close();
+
+		return isset($allrows) ? $allrows : null;
+	}
+
 	public function GetAllPosts()
 	{
 		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post");
@@ -66,8 +84,6 @@ class PostDAL
 		$result->free();
 
 		$this->conn->close();
-
-		
 
 		return isset($allrows) ? $allrows : null;
 	}

@@ -14,6 +14,7 @@ private static $childpost = 'BulletinView::Childpost';
 private $CategoryList;
 private $PostList;
 private $BulletinPage;
+private $postToReply;
 
 	
 	public function __construct()
@@ -23,20 +24,27 @@ private $BulletinPage;
 
 	public function SetPageToDisplay()
 	{
-		if(isset($_GET["Post"]))
+
+		if(isset($_POST[self::$childpost]))
 		{
-			$this->BulletinPage = $this->GeneratePostHTML();
-		}
-		else if (isset($_GET["View"]))
-		{
-			$this->BulletinPage = $this->GenerateViewPostsHTML();
+			$this->BulletinPage = $this->GenerateSinglePostHTML();
 		}
 		else
-		{
-			$this->BulletinPage = $this->GenerateFirstPage();
-		}
+		{		
+			if(isset($_GET["Post"]))
+			{
+				$this->BulletinPage = $this->GeneratePostHTML();
+			}
+			else if (isset($_GET["View"]))
+			{
+				$this->BulletinPage = $this->GenerateViewPostsHTML();
+			}
+			else
+			{
+				$this->BulletinPage = $this->GenerateFirstPage();
+			}
+		}	
 	}
-
 
 	public function Response()
 	{
@@ -141,7 +149,7 @@ private $BulletinPage;
 					<div class="content">
 					' .$post['Post'] . '
 					</div>	
-					<input type="submit" id="' . self::$childpost . '" name="' . self::$childpost . '" value="Reply"/>
+					<button type="submit" id="'. self::$childpost.'" name="'. self::$childpost.'" value="'. $post['Signature'].'">Reply</button>
 					</fieldset>		
 					</div>
 					</form>	
@@ -151,6 +159,38 @@ private $BulletinPage;
 		}
 
 		return $html;
+	}
+	//<input type="submit" id="' .self::$childpost.'" name="' . self::$childpost . '" value="Reply"/>
+	//<input type="submit" id="' . self::$childpost . '" name="' . self::$childpost . '" value="Reply"/>
+
+	public function GenerateSinglePostHTML()
+	{
+		if(isset($this->postToReply))
+		{
+			foreach($this->postToReply as $post)
+			{
+				$html =
+					'
+					<form method="post">
+					<div id="PostList">
+					<fieldset class="post">
+					<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
+					<div class="Signature">
+					'.$post['Signature'].' 
+					</div>
+					<div class="content">
+					' .$post['Post'] . '
+					</fieldset>		
+					<textarea rows="3" cols="30" id="" name = "" class="post"></textarea>
+					
+					</div>
+					</form>	
+					<br>
+					';					
+			}
+			return $html;
+		}
+	
 	}
 
 	public function HasUserChosenShowAll()
@@ -165,18 +205,18 @@ private $BulletinPage;
 
 	public function UserPressedReply()
 	{
-		return isset($_POST[self::$childpost]);
+		//var_dump($_POST[self::$childpost]);
+
+		if(isset($_POST[self::$childpost]))
+		{
+			return $_POST[self::$childpost];
+		}
 	}
 
-	public function GetPostForReply()
+	public function GetPostForReply($post)
 	{
-		//someshit
+		$this->postToReply = $post;
 	}
-
-	/*public function SetBulletinPostPage()
-	{
-		$this->BulletinPage = $this->GeneratePostHTML();
-	}*/
 
 	public function SetBulletinViewPostPage()
 	{
