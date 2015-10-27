@@ -1,5 +1,9 @@
 # IDV608_Bulletinboard
 
+Change the database connection settings in the Settings.php file and you should be good to go!
+
+
+
 Project Vision
 
 My goal is to create an anonymous bulletin board where you can post links or simple comments. I may also implement that you can
