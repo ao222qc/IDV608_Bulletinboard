@@ -33,6 +33,22 @@ class Post
 		self::$postDAL->AddPost($post);
 	}
 
+	public function AddReply($post, $reply)
+	{
+
+		self::$postDAL->AddReply($post, $reply);
+
+	}
+
+	public function GetAllReplies()
+	{
+		$data = array();
+
+		$data = self::$postDAL->GetAllReplies();
+
+		return $data;
+	}
+
 	public function GetPostsByCategory($category)
 	{
 		$data = array();
@@ -44,25 +60,20 @@ class Post
 
 	public function GetPostsBySignature($signature)
 	{
-
-
 		$data = array();
 
 		$data = self::$postDAL->GetPostsBySignature($signature);
 
 		return $data;
-
 	}
 
 	public function GetAllPosts()
 	{
-
 		$data = array();
 
 		$data = self::$postDAL->GetAllPosts();
 
 		return $data;
-
 	}
 
 	public function GetContent()
@@ -84,12 +95,4 @@ class Post
 	{
 		return $this->CategoryID;
 	}
-
 }
-
-/*
-	public function GetStyle()
-	{
-
-	}
-*/

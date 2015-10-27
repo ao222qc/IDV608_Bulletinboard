@@ -30,13 +30,20 @@ class PostDAL
 		$signature = mysqli_escape_string($this->conn, $signature);
 		$childposts = mysqli_escape_string($this->conn, $childposts);
 
-		mysqli_query($this->conn, "INSERT INTO post (Post, Signature, Childpost, CategoryID) VALUES ('$postContent', '$signature', '$childposts', '$PostCategory')");
+		mysqli_query($this->conn, "INSERT INTO post (Post, Signature, CategoryID) VALUES ('$postContent', '$signature', '$PostCategory')");
+	}
+
+	public function AddReply($post, $reply)
+	{
+		$postid = $post['PostID'];
+
+		mysqli_query($this->conn, "INSERT INTO Reply (Reply, PostID) VALUES ('$reply', '$postid')");
 	}
 
 	public function GetPostsByCategory($category)
 	{
 
-		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post WHERE CategoryID = '$category'");
+		$result = $this->conn->query("SELECT PostID, Post, Signature, CategoryID FROM post WHERE CategoryID = '$category'");
 
 		$allrows = array();
 
@@ -47,14 +54,14 @@ class PostDAL
 
 		$result->free();
 
-		$this->conn->close();
+		//$this->conn->close();
 
 		return isset($allrows) ? $allrows : null;
 	}	
 
 	public function GetPostsBySignature($signature)
 	{
-		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post WHERE Signature = '$signature'");
+		$result = $this->conn->query("SELECT PostID, Post, Signature, CategoryID FROM post WHERE Signature = '$signature'");
 
 		$allrows = array();
 
@@ -65,14 +72,44 @@ class PostDAL
 
 		$result->free();
 
-		$this->conn->close();
+		//$this->conn->close();
 
 		return isset($allrows) ? $allrows : null;
 	}
 
 	public function GetAllPosts()
 	{
-		$result = $this->conn->query("SELECT Post, Signature, Childpost, CategoryID FROM post");
+		//$result = $this->conn->query('SELECT * FROM Post LEFT JOIN Reply ON Reply.PostID = Post.PostID');
+
+		$result = $this->conn->query('SELECT * FROM Post');
+		$allrows = array();
+
+		while ($row = $result->fetch_assoc())
+		{
+			$row["replies"] = array();
+
+			$replyresult = $this->conn->query('SELECT * FROM Reply WHERE PostID='.$row["PostID"]);
+
+			while ($replyrow = $replyresult->fetch_assoc())
+			{
+				array_push($row["replies"], $replyrow);
+			}
+
+		    array_push($allrows, $row);
+		}
+
+		$result->free();
+
+		//$this->conn->close();
+
+
+		return isset($allrows) ? $allrows : null;
+	}
+
+	public function GetAllReplies()
+	{
+
+		$result = $this->conn->query('SELECT * FROM Reply');
 
 		$allrows = array();
 
@@ -83,7 +120,7 @@ class PostDAL
 
 		$result->free();
 
-		$this->conn->close();
+		//$this->conn->close();
 
 		return isset($allrows) ? $allrows : null;
 	}

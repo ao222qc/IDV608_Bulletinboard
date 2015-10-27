@@ -1,31 +1,33 @@
 <?php
-
+session_start();
 class BulletinView
 {
 
-//private static $GoToFirstPage = 'BulletinView::GoToFirstPage';
 private static $ListallCategories = 'BulletinView::ListallCategories';
 private static $ListSpecificCategory = 'BulletinView::ListSpecificCategory';
 private static $submit = 'BulletinView::Submit';
 private static $category = 'BulletinView::Category';
 private static $post = 'BulletinView::Post';
 private static $signature = 'BulletinView::Signature';
+private static $childpostbutton = 'BulletinView::Childpostbutton';
 private static $childpost = 'BulletinView::Childpost';
+private static $childpostsubmit = 'BulletinView::childpostsubmit';
+public static $submittedchildpost = 'BulletinView::submittedchildpost';
 private $CategoryList;
 private $PostList;
 private $BulletinPage;
 private $postToReply;
+private $replies;
 
 	
 	public function __construct()
 	{
-		
 	}
 
 	public function SetPageToDisplay()
 	{
 
-		if(isset($_POST[self::$childpost]))
+		if(isset($_POST[self::$childpostbutton]))
 		{
 			$this->BulletinPage = $this->GenerateSinglePostHTML();
 		}
@@ -46,9 +48,13 @@ private $postToReply;
 		}	
 	}
 
+	public function GetReplies($replies)
+	{
+		$this->replies = $replies;
+	}
+
 	public function Response()
 	{
-
 		$response = '';
 
 		$response = $this->BulletinPage;
@@ -135,26 +141,36 @@ private $postToReply;
 
 		if(isset($this->PostList))
 		{
+			
+		
 			foreach($this->PostList as $post)
 			{
-				$html .=  
-				'	
-					<form method="post">
-					<div id="PostList">
-					<fieldset class="post">
-					<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
-					<div class="Signature">
-					'.$post['Signature'].' 
-					</div>
-					<div class="content">
-					' .$post['Post'] . '
-					</div>	
-					<button type="submit" id="'. self::$childpost.'" name="'. self::$childpost.'" value="'. $post['Signature'].'">Reply</button>
-					</fieldset>		
-					</div>
-					</form>	
-					<br>
-				';
+					$html .=  
+					'	
+						<form method="post">
+						<div id="PostList">
+						<fieldset class="post">
+						<legend>'. $this->CategoryList[$post['CategoryID']-1]['Category'] . '</legend>
+						<div class="Signature">
+						'.$post['Signature'].' 
+						</div>
+						<div class="content">
+						' .$post['Post'] . '
+						</div>
+						<button type="submit" id="'. self::$childpostbutton.'" name="'. self::$childpostbutton.'" value="'. $post['Signature'].'">Reply</button>
+						<fieldset>
+						<legend>Replies</legend>
+						';
+						foreach($post['replies'] as $reply)
+						{
+							$html .= '<div>'.$reply["Reply"].'</div>';
+						}	
+						$html .= '</fieldset>
+						</fieldset>		
+						</div>
+						</form>	
+						<br>
+					';
 			}
 		}
 
@@ -162,6 +178,16 @@ private $postToReply;
 	}
 	//<input type="submit" id="' .self::$childpost.'" name="' . self::$childpost . '" value="Reply"/>
 	//<input type="submit" id="' . self::$childpost . '" name="' . self::$childpost . '" value="Reply"/>
+	//'. $this->GetReplies($post) .'
+
+	public function GetRepliesForForm()
+	{
+
+
+
+
+		 
+	}
 
 	public function GenerateSinglePostHTML()
 	{
@@ -169,6 +195,8 @@ private $postToReply;
 		{
 			foreach($this->postToReply as $post)
 			{
+				$_SESSION[self::$submittedchildpost] = $post;
+				var_dump($_SESSION['post']);
 				$html =
 					'
 					<form method="post">
@@ -181,8 +209,8 @@ private $postToReply;
 					<div class="content">
 					' .$post['Post'] . '
 					</fieldset>		
-					<textarea rows="3" cols="30" id="" name = "" class="post"></textarea>
-					
+					<textarea rows="3" cols="30" id="'.self::$childpost.'" name="'.self::$childpost .'" class="post"></textarea>
+					<input type="submit" id="' . self::$childpostsubmit . '" name="' . self::$childpostsubmit . '" value="Submit reply"/>
 					</div>
 					</form>	
 					<br>
@@ -191,6 +219,16 @@ private $postToReply;
 			return $html;
 		}
 	
+	}
+
+	public function GetReply()
+	{
+		return $_POST[self::$childpost];
+	}
+
+	public function UserPressedSubmitReply()
+	{
+		return isset($_POST[self::$childpostsubmit]);
 	}
 
 	public function HasUserChosenShowAll()
@@ -205,11 +243,9 @@ private $postToReply;
 
 	public function UserPressedReply()
 	{
-		//var_dump($_POST[self::$childpost]);
-
-		if(isset($_POST[self::$childpost]))
+		if(isset($_POST[self::$childpostbutton]))
 		{
-			return $_POST[self::$childpost];
+			return $_POST[self::$childpostbutton];
 		}
 	}
 

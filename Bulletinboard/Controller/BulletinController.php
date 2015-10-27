@@ -25,9 +25,7 @@ class BulletinController
 		//Fetches the cached Categorylist from CategoryDAL. Sends to bulletinview.
 		$this->BulletinView->LoadCategories($this->CategoryDAL->GetCategoryList());
 
-
-
-		$this->BulletinView->SetPageToDisplay();
+		$this->SetPageToDisplay();
 
 		if($this->BulletinView->HasUserSubmitted())
 		{
@@ -43,11 +41,21 @@ class BulletinController
 		{
 			$this->GetPosts();
 		}
+
 		if($this->BulletinView->UserPressedReply())
 		{
 			$signature = $this->BulletinView->UserPressedReply();
 
 			$this->GetPostBySignature($signature);
+		}
+
+		if($this->BulletinView->UserPressedSubmitReply())
+		{
+			$reply = $this->BulletinView->GetReply();
+
+			$post = $_SESSION[BulletinView::$submittedchildpost];
+
+			$this->AddReply($post, $reply);
 		}
 	}
 
@@ -76,28 +84,52 @@ class BulletinController
 	{
 		$posts = $this->Post->GetAllPosts();
 
+		$this->LoadReplies();
+
 		$this->BulletinView->GetPosts($posts);
 
-		$this->BulletinView->SetPageToDisplay();
+		$this->SetPageToDisplay();
 	}
 
 	public function GetPostsByCategory()
 	{
 		$posts = $this->Post->GetPostsByCategory($this->BulletinView->GetCategory());
 
+		$this->LoadReplies();
+
 		$this->BulletinView->GetPosts($posts);
 
-		$this->BulletinView->SetPageToDisplay();
+		$this->SetPageToDisplay();
 	}
 
 	public function GetPostBySignature($signature)
 	{
 		$post = $this->Post->GetPostsBySignature($signature);
 
+		$this->LoadReplies();
+
 		$this->BulletinView->GetPostForReply($post);
 
-		$this->BulletinView->SetPageToDisplay();
+		$this->SetPageToDisplay();
 
+		return $post;
+	}
+
+	public function LoadReplies()
+	{
+		$replies = $this->Post->GetAllReplies();
+
+		$this->BulletinView->GetReplies($replies);
+	}
+
+	public function SetPageToDisplay()
+	{
+		$this->BulletinView->SetPageToDisplay();
+	}
+
+	public function AddReply($post, $reply)
+	{
+		$this->Post->AddReply($post, $reply);
 	}
 
 }
