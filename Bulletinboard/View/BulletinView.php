@@ -155,7 +155,7 @@ private $replies;
 						'.$post['Signature'].' 
 						</div>
 						<div class="content">
-						' .$post['Post'] . '
+						' .$this->CheckIfUrlInPost($post).'
 						</div>
 						<button type="submit" id="'. self::$childpostbutton.'" name="'. self::$childpostbutton.'" value="'. $post['Signature'].'">Reply</button>
 						<fieldset>
@@ -163,7 +163,7 @@ private $replies;
 						';
 						foreach($post['replies'] as $reply)
 						{
-							$html .= '<div>'.$reply["Reply"].'</div>';
+							$html .= '<fieldset>'.$reply['Reply'].'</fieldset><br>';
 						}	
 						$html .= '</fieldset>
 						</fieldset>		
@@ -179,14 +179,14 @@ private $replies;
 	//<input type="submit" id="' .self::$childpost.'" name="' . self::$childpost . '" value="Reply"/>
 	//<input type="submit" id="' . self::$childpost . '" name="' . self::$childpost . '" value="Reply"/>
 	//'. $this->GetReplies($post) .'
+	/*<div class="content">
+						' .$post['Post'] . '
+						</div>*/
 
-	public function GetRepliesForForm()
+	public function CheckIfUrlInPost($post)
 	{
-
-
-
-
-		 
+		$html = preg_replace("(\\bhttp://\\S*)",'<a href="$0" target="_blank">$0</a>',$post['Post']);
+		return $html;
 	}
 
 	public function GenerateSinglePostHTML()
@@ -196,7 +196,6 @@ private $replies;
 			foreach($this->postToReply as $post)
 			{
 				$_SESSION[self::$submittedchildpost] = $post;
-				var_dump($_SESSION['post']);
 				$html =
 					'
 					<form method="post">

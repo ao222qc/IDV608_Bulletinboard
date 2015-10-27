@@ -49,6 +49,15 @@ class PostDAL
 
 		while ($row = $result->fetch_array())
 		{
+			$row["replies"] = array();
+
+			$replyresult = $this->conn->query('SELECT * FROM Reply WHERE PostID='.$row["PostID"]);
+
+			while ($replyrow = $replyresult->fetch_assoc())
+			{
+				array_push($row["replies"], $replyrow);
+			}
+
 		    array_push($allrows, $row);
 		}
 
@@ -67,6 +76,15 @@ class PostDAL
 
 		while ($row = $result->fetch_array())
 		{
+
+			$row["replies"] = array();
+
+			$replyresult = $this->conn->query('SELECT * FROM Reply WHERE PostID='.$row["PostID"]);
+
+			while ($replyrow = $replyresult->fetch_assoc())
+			{
+				array_push($row["replies"], $replyrow);
+			}
 		    array_push($allrows, $row);
 		}
 

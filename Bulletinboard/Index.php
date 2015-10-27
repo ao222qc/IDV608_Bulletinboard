@@ -12,8 +12,8 @@ require_once('Settings.php');
 require_once('Model/DataValidation.php');
 require_once('Model/CategoryDAL.php');
 
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
 
 
 $Category = new Category();
